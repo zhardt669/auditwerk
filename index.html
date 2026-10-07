@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="de-AT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auditwerk – KI-Copilot für Energieaudits nach EN 16247 · Pilotprogramm 2026</title>
+<meta name="description" content="Auditwerk bereitet Verbrauchsdaten auf, analysiert Lastgänge und entwirft den Auditbericht nach EN 16247 und EEffG. Jede Zahl mit Quelle, jede Aussage erst nach Ihrer Freigabe. Zehn Pilotplätze 2026.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://auditwerk.at/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%230A7A4A'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_AT">
+<meta property="og:site_name" content="Auditwerk">
+<meta property="og:url" content="https://auditwerk.at/">
+<meta property="og:title" content="Auditwerk – Wir bereiten vor. Sie entscheiden.">
+<meta property="og:description" content="KI-Copilot für Energieaudits nach EN 16247. Entwickelt mit 24 Energieauditor:innen aus Österreich. Zehn Pilotplätze 2026.">
+<!-- TODO: 1200×630 px Vorschaubild anlegen, sonst entfernen -->
+<meta property="og:image" content="https://auditwerk.at/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Auditwerk","url":"https://auditwerk.at/","email":"pilot@auditwerk.at","address":{"@type":"PostalAddress","addressLocality":"Linz","addressCountry":"AT"},"description":"KI-Copilot für Energieaudits nach EN 16247."}
+</script>
+<script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.__aw)document.documentElement.classList.remove('js')},4000);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..600&family=Geist+Mono:wght@400..500&display=swap">
+<style>
+/* Ein helles Theme, eine Textachse (1fr / 1.4fr), ein Akzent: Grün.
+   Bewegung nur dort, wo sie etwas erklärt. */
+:root{
+  --bg:#FFFFFF; --ink:#0B0F0D; --ink-2:#3B423E; --muted:#6B726E; --muted-2:#8B928E; --faint:#C3C9C5; --line:#ECEEEC; --paper:#FAFBFA;
+  --green:#0A7A4A; --green-2:#13A866; --green-soft:#EDF7F1;
+  --f:"Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-mono:"Geist Mono", ui-monospace, Menlo, monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --maxw:1240px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);overflow-x:clip;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.6;margin:0;-webkit-font-smoothing:antialiased;font-weight:400}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:clamp(16px,5vw,64px)}
+h1,h2,h3{margin:0;font-weight:400;letter-spacing:-.04em;line-height:1.02;text-wrap:balance}
+p,dl,dd{margin:0}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+::selection{background:var(--green);color:#fff}
+:focus-visible{outline:2px solid var(--green);outline-offset:4px;border-radius:6px}
+.skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:.6rem 1rem;border-radius:999px;font-size:.9rem}
+.skip:focus{top:12px}
+.label{font-size:.82rem;color:var(--muted);letter-spacing:.01em;display:flex;align-items:center;gap:.6rem}
+.label i{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;flex:none}
+.mono{font-family:var(--f-mono)}
+.todo{background:#FFF4CC;outline:1px dashed #B8930B;outline-offset:1px;border-radius:3px;padding:0 .2em}
+
+/* Fortschritt + Navigation */
+.progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--green);transform-origin:left;transform:scaleX(0);z-index:50}
+.nav{position:fixed;top:0;left:0;right:0;z-index:40;padding-top:env(safe-area-inset-top,0px);transition:background .5s, box-shadow .5s}
+.nav.solid{background:rgba(255,255,255,.92);box-shadow:0 1px 0 var(--line)}
+@supports (backdrop-filter:blur(1px)){.nav.solid{background:rgba(255,255,255,.8);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px)}}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{font-weight:500;font-size:1.08rem;letter-spacing:-.03em;display:flex;align-items:center;gap:.5rem}
+.logo b{width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block}
+.nav ul{display:flex;gap:2.2rem;list-style:none;margin:0;padding:0;font-size:.9rem;color:var(--ink-2)}
+.nav ul a{transition:color .3s}
+.nav ul a:hover{color:var(--green)}
+@media (max-width:820px){.nav ul{display:none}}
+
+.btn{display:inline-flex;align-items:center;gap:.7rem;height:48px;padding:0 1.5rem;border-radius:999px;background:var(--ink);color:#fff;font-size:.94rem;font-weight:500;letter-spacing:-.01em;border:0;cursor:pointer;transition:background .4s var(--ease)}
+.btn:hover{background:var(--green)}
+.btn .ar{display:inline-block;transition:transform .5s var(--ease)}
+.btn:hover .ar{transform:translateX(4px)}
+.btn.sm{height:40px;padding:0 1.1rem;font-size:.86rem;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--faint)}
+.btn.ghost:hover{background:transparent;color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.link{font-size:.94rem;color:var(--ink-2);position:relative;padding-block:.2rem;background:none;border:0;cursor:pointer}
+.link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(.3);transform-origin:left;transition:transform .6s var(--ease)}
+.link:hover::after{transform:scaleX(1)}
+
+/* Hero */
+.hero{padding-top:clamp(108px,14vh,168px)}
+.hero .label{margin-bottom:clamp(20px,2.4vw,32px)}
+.hero h1{font-size:clamp(2.7rem,7.4vw,7.6rem);line-height:.94;letter-spacing:-.055em}
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.07em;margin-bottom:-.07em}
+.hero h1 .ln span{display:inline-block;animation:up 1.3s var(--ease) both}
+.hero h1 .l1 span{color:var(--muted)}
+.hero h1 .l2 span{animation-delay:.1s}
+.js .hero h1 .l2 span{color:var(--muted-2)}
+@keyframes up{from{transform:translateY(105%)}}
+.fade{animation:fade 1.2s var(--ease) both;animation-delay:.45s}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}}
+
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"copy find" "curve curve" "proof proof";column-gap:40px;margin-top:clamp(28px,3.6vw,48px);align-items:end}
+.hero-copy{grid-area:copy}
+.hero-copy p{font-size:clamp(1.04rem,1.3vw,1.2rem);line-height:1.5;color:var(--ink-2);max-width:38ch;letter-spacing:-.01em}
+.hero-actions{display:flex;gap:1.6rem;align-items:center;flex-wrap:wrap;margin-top:1.6rem}
+
+.find{grid-area:find;justify-self:end;width:100%;max-width:372px;border:1px solid var(--line);border-radius:16px;padding:18px 20px 18px;background:#fff;box-shadow:0 1px 0 var(--line),0 24px 48px -32px rgba(11,15,13,.22);font-size:.92rem;transition:border-color .5s}
+.js .find{visibility:hidden;opacity:0}
+.find .label{margin-bottom:.6rem;font-size:.76rem}
+.find p.ft{color:var(--ink-2);line-height:1.5}
+.find p.ft b{color:var(--ink);font-weight:500}
+.find .acts{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+.find .acts .btn{height:36px;padding:0 1rem;font-size:.84rem}
+.find .msg{display:none;margin-top:1rem;font-size:.86rem;color:var(--green);align-items:baseline;justify-content:space-between;gap:1rem}
+.find .msg .link{font-size:.8rem;color:var(--muted)}
+.find[data-state] .acts{display:none}
+.find[data-state] .msg{display:flex}
+.find[data-state=yes]{border-color:#CFE8DA}
+.find[data-state=no] .msg span{color:var(--muted)}
+
+.curve{grid-area:curve;margin-top:clamp(28px,3.6vw,48px);position:relative}
+.curve svg{display:block;width:100%;height:clamp(140px,15vw,220px);overflow:visible;touch-action:pan-y}
+.curve .days{display:grid;grid-template-columns:repeat(7,1fr);font-size:.72rem;color:var(--muted);font-family:var(--f-mono);border-top:1px solid var(--line);padding-top:.7rem}
+.dot{position:absolute;left:0;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(19,168,102,.15);pointer-events:none}
+.read{position:absolute;left:0;top:0;width:19ch;text-align:center;font-family:var(--f-mono);font-size:.72rem;white-space:nowrap;color:var(--ink);background:#fff;padding:.25rem 0;border-radius:999px;box-shadow:0 1px 0 var(--line),0 6px 20px rgba(11,15,13,.07);pointer-events:none}
+.js .dot,.js .read{opacity:0}
+.ann{position:absolute;font-size:.76rem;color:var(--muted);white-space:nowrap;transition:opacity .9s var(--ease), transform .9s var(--ease)}
+.js .ann{opacity:0;transform:translateY(6px)}
+.js .ann.on{opacity:1;transform:none}
+.ann b{color:var(--ink);font-weight:500}
+.ann.g b{color:var(--green)}
+@media (max-width:640px){#annBase{display:none}}
+.proof{grid-area:proof;margin-top:clamp(28px,3.6vw,44px);display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+.proof span b{color:var(--ink);font-weight:500}
+@media (max-width:760px){
+  .hero-grid{grid-template-columns:1fr;grid-template-areas:"copy" "curve" "find" "proof"}
+  .find{justify-self:stretch;max-width:none;margin-top:28px}
+}
+
+.sec{padding-block:clamp(104px,14vw,200px)}
+.sec.flush{padding-top:0}
+.intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:24px 40px;margin-bottom:clamp(56px,8vw,112px)}
+.intro h2{font-size:clamp(2.2rem,4.6vw,4.2rem)}
+.intro p{color:var(--ink-2);max-width:48ch;font-size:1.08rem;margin-top:1.6rem}
+@media (max-width:820px){.intro{grid-template-columns:1fr}}
+
+/* Studie: 24 Punkte */
+.study{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(40px,6vw,96px)}
+.qa{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.2fr);gap:32px;align-items:baseline;border-top:1px solid var(--line);padding-block:clamp(32px,4.5vw,60px)}
+.qa .n{font-size:clamp(4rem,8.6vw,8.4rem);font-weight:300;letter-spacing:-.06em;line-height:.85;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qa .n .of{font-size:.3em;letter-spacing:-.02em;color:var(--muted);margin-left:.08em}
+.qa p{font-size:clamp(1.1rem,1.5vw,1.36rem);line-height:1.4;letter-spacing:-.015em;max-width:30ch}
+.qa small{display:block;font-size:.86rem;color:var(--muted);margin-top:.8rem;letter-spacing:0;line-height:1.5}
+.qa small .pc{font-family:var(--f-mono);color:var(--ink-2)}
+.panel{position:sticky;top:calc(50vh - 170px);align-self:start;padding-top:clamp(32px,4.5vw,60px)}
+.dots{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(10px,1.2vw,16px);max-width:320px}
+.dots i{display:block;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--faint);transition:background-color .5s var(--ease) var(--d,0s), border-color .5s var(--ease) var(--d,0s)}
+.dots i.on{background:var(--green);border-color:var(--green)}
+.panel .pn{margin-top:1.8rem;font-size:1.05rem;letter-spacing:-.01em}
+.panel .pn b{font-family:var(--f-mono);font-weight:500;color:var(--green)}
+.panel .pt{margin-top:.4rem;font-size:.86rem;color:var(--muted);max-width:32ch;min-height:2.6em}
+.mini{display:none}
+.method{margin-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px 40px;border-top:1px solid var(--line);padding-top:24px;font-size:.92rem;color:var(--muted)}
+.method b{color:var(--ink-2);font-weight:500}
+.method p{max-width:64ch;line-height:1.6}
+@media (max-width:900px){
+  .study{grid-template-columns:1fr}
+  .panel{display:none}
+  .qa{grid-template-columns:1fr;gap:12px}
+  .mini{display:flex;flex-wrap:wrap;gap:5px;margin-top:1.1rem;max-width:220px}
+  .mini i{width:10px;height:10px;border-radius:50%;border:1px solid var(--faint)}
+  .mini i.on{background:var(--green);border-color:var(--green)}
+  .method{grid-template-columns:1fr}
+}
+
+/* Chaos -> Ordnung */
+.pin{display:flex;align-items:center;padding-block:clamp(96px,12vw,140px) 64px;overflow:hidden;background:var(--bg)}
+@media (min-width:900px){.pin{min-height:100vh;min-height:100svh;padding-block:96px 56px}}
+.pin .wrap{width:100%;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr);gap:clamp(30px,6vw,90px);align-items:center}
+.states{display:grid}
+.st{grid-area:1/1}
+.st.a{visibility:hidden}
+.st h2{font-size:clamp(2.1rem,4.2vw,3.8rem);margin-block:1.2rem 1.4rem}
+.st p{color:var(--ink-2);max-width:36ch;font-size:1.05rem}
+.sheet{position:relative;font-size:.92rem}
+.sheet .row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.75fr) minmax(0,1.2fr) 24px;gap:16px;align-items:center;padding-block:.95rem;border-bottom:1px solid var(--line)}
+.sheet .row.h{font-size:.74rem;color:var(--muted);padding-block:.5rem}
+.c{display:block;white-space:nowrap}
+.c.v{font-family:var(--f-mono);font-size:.86rem;text-align:right;font-variant-numeric:tabular-nums}
+.c.s{font-size:.78rem;color:var(--muted);font-family:var(--f-mono);overflow:hidden;text-overflow:ellipsis}
+.row.sub .nm{padding-left:1.1rem}
+.row.sub .nm:not(.raw)::before{content:"davon ";color:var(--muted)}
+.c.raw{font-family:var(--f-mono);font-size:.84rem;color:var(--muted);text-decoration:underline dashed var(--faint);text-underline-offset:4px}
+.k{width:22px;height:22px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:.72rem}
+.k.q{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);font-weight:600}
+.sheet .total{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:1.2rem;font-size:.9rem}
+.sheet .total small{display:block;font-size:.76rem;color:var(--muted);margin-top:.2rem}
+.sheet .total b{font-family:var(--f-mono);font-weight:500;color:var(--green);font-size:1.05rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (max-width:899.98px){.pin .wrap{grid-template-columns:1fr}}
+@media (max-width:600px){.sheet .row{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr) 22px;gap:10px}.sheet .c.s{display:none}.sheet .nm{white-space:normal}}
+
+/* Produkt: Quellen-Nachweis */
+.trace{position:relative;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(48px,8vw,128px);align-items:start}
+.doc{position:relative;z-index:1;border:1px solid var(--line);border-radius:18px;padding:clamp(24px,3.6vw,52px);background:#fff;box-shadow:0 1px 0 var(--line),0 40px 80px -56px rgba(11,15,13,.25)}
+.doc .meta{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:28px}
+.doc h3{font-size:1.45rem;letter-spacing:-.03em;font-weight:500;margin-bottom:1.1rem}
+.doc p{font-size:1.05rem;line-height:1.8;color:var(--ink-2)}
+.doc p+p{margin-top:1rem}
+.ref{font:inherit;color:var(--ink);background:transparent;border:0;padding:.05em .2em;margin:0 -.05em;border-radius:5px;cursor:pointer;box-shadow:inset 0 -1.5px 0 var(--green-2);transition:background-color .3s, color .3s, box-shadow .3s;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ref:hover,.ref[aria-pressed=true]{background:var(--green-soft);color:var(--green);box-shadow:inset 0 -1.5px 0 var(--green)}
+.hint{margin-top:1.4rem;font-size:.8rem;color:var(--muted);display:flex;gap:.5rem;align-items:center}
+.srcs{position:relative;z-index:1;display:grid;padding-top:clamp(8px,2vw,24px)}
+.srcs > .label{grid-row:1;margin-bottom:1.2rem}
+.src{grid-area:2/1;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .45s var(--ease), transform .45s var(--ease), visibility 0s .45s}
+.src.on{opacity:1;visibility:visible;transform:none;transition:opacity .45s var(--ease), transform .45s var(--ease)}
+.src .hd{border:1px solid var(--line);border-radius:14px;background:var(--paper);padding:16px 18px}
+.src .fn{font-family:var(--f-mono);font-size:.86rem;color:var(--ink);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;align-items:baseline;overflow-wrap:anywhere}
+.src .loc{font-size:.8rem;color:var(--muted);margin-top:.25rem}
+.chip{font-family:var(--f-mono);font-size:.7rem;border-radius:999px;padding:.15rem .55rem;background:var(--green-soft);color:var(--green);white-space:nowrap}
+.chip.n{background:#F1F2F1;color:var(--ink-2)}
+.kv{margin-top:14px;font-family:var(--f-mono);font-size:.8rem}
+.kv div{display:flex;justify-content:space-between;gap:16px;padding:.55rem .2rem;border-bottom:1px solid var(--line);color:var(--ink-2)}
+.kv div b{font-weight:500;color:var(--ink);text-align:right}
+.kv div.hl{background:var(--green-soft);border-radius:6px;border-bottom-color:transparent;padding-inline:.6rem;color:var(--green)}
+.kv div.hl b{color:var(--green)}
+.src .note{margin-top:12px;font-size:.82rem;color:var(--muted);line-height:1.5}
+.wire{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
+.wire path{fill:none;stroke:var(--green);stroke-width:1.2}
+.wire circle{fill:var(--green)}
+@media (max-width:899.98px){.trace{grid-template-columns:minmax(0,1fr)}.wire{display:none}}
+
+.caps{margin-top:clamp(80px,10vw,140px)}
+.caps .label{margin-bottom:1.4rem}
+.cap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px 40px;align-items:baseline;padding-block:clamp(22px,3vw,36px);border-top:1px solid var(--line)}
+.cap:last-child{border-bottom:1px solid var(--line)}
+.cap h3{font-size:clamp(1.5rem,2.6vw,2.3rem);letter-spacing:-.035em}
+.cap h3 span{display:block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:0;color:var(--muted);margin-bottom:.6rem}
+.cap p{color:var(--ink-2);max-width:48ch}
+@media (max-width:820px){.cap{grid-template-columns:1fr}}
+
+/* Zitat + Prinzipien */
+.quote{font-size:clamp(2rem,5vw,4.6rem);line-height:1.08;letter-spacing:-.045em;font-weight:400;max-width:20ch}
+.js .quote .w{opacity:.14}
+.quote-src{margin-top:2rem;color:var(--muted);font-size:.9rem}
+.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(30px,5vw,72px);margin-top:clamp(80px,10vw,140px)}
+.principles > div{border-top:1px solid var(--ink);padding-top:1.2rem}
+.principles .no{font-family:var(--f-mono);font-size:.76rem;color:var(--green);display:block;margin-bottom:2.4rem}
+.principles h3{font-size:1.3rem;letter-spacing:-.025em;margin-bottom:.9rem;font-weight:500}
+.principles p{color:var(--ink-2);font-size:.98rem}
+@media (max-width:820px){.principles{grid-template-columns:1fr}}
+
+/* Rechner */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,8vw,120px);align-items:center}
+.calc h2{font-size:clamp(2.2rem,4.6vw,4.2rem);margin-bottom:1.2rem}
+.calc .lead{color:var(--ink-2);max-width:42ch;margin-bottom:3rem}
+.field{margin-bottom:2.2rem}
+.field label{display:flex;justify-content:space-between;font-size:.92rem;color:var(--ink-2);margin-bottom:.9rem}
+.field output{font-family:var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(var(--green),var(--green)) 0/var(--p,50%) 100% no-repeat,var(--line);border-radius:2px}
+input[type=range]::-moz-range-track{height:2px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:2px;background:var(--green)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:1.5px solid var(--green);margin-top:-9px;box-shadow:0 2px 10px rgba(10,122,74,.18);transition:transform .3s var(--ease)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:1.5px solid var(--green)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.2)}
+.res .big{font-size:clamp(5rem,12vw,11rem);font-weight:300;letter-spacing:-.07em;line-height:.85;color:var(--green);font-variant-numeric:tabular-nums}
+.res .big small{font-size:.28em;letter-spacing:-.02em;color:var(--ink);margin-left:.15em}
+.res .cap1{margin-top:1rem;color:var(--ink-2)}
+.res .sub{display:flex;gap:clamp(24px,4vw,56px);margin-top:2.4rem;padding-top:1.6rem;border-top:1px solid var(--line);flex-wrap:wrap}
+.res .sub b{display:block;font-size:1.7rem;font-weight:400;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.res .sub span{font-size:.84rem;color:var(--muted)}
+.res .fx{margin-top:1.6rem;font-family:var(--f-mono);font-size:.8rem;color:var(--ink-2)}
+.res .note{margin-top:.5rem;font-size:.82rem;color:var(--muted);max-width:46ch}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:860px){.calc{grid-template-columns:1fr}}
+
+/* Auftragslage */
+.market h2{font-size:clamp(2.4rem,6.2vw,6rem);max-width:14ch;letter-spacing:-.05em}
+.market h2 em{font-style:normal;color:var(--green)}
+.market .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px 40px;margin-top:clamp(48px,6vw,80px)}
+.market .row p{color:var(--ink-2);max-width:48ch;font-size:1.05rem}
+.figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.figs div{border-top:1px solid var(--ink);padding-top:1rem}
+.figs b{display:block;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;letter-spacing:-.04em}
+.figs span{font-size:.86rem;color:var(--muted);display:block;margin-top:.4rem;line-height:1.45}
+.figs span em{font-style:normal;font-family:var(--f-mono);color:var(--ink-2)}
+.src-line{grid-column:2;font-size:.8rem;color:var(--muted)}
+@media (max-width:820px){.market .row{grid-template-columns:1fr}.figs{grid-template-columns:1fr}.src-line{grid-column:1}}
+
+/* Team */
+.team{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:40px}
+.team h2{font-size:clamp(2.2rem,4.6vw,4.2rem)}
+.team .txt p{font-size:clamp(1.1rem,1.6vw,1.35rem);line-height:1.5;letter-spacing:-.015em;color:var(--ink-2);max-width:38ch}
+.team .txt p+p{margin-top:1.4rem}
+.team .txt p strong{color:var(--ink);font-weight:500}
+.people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:clamp(48px,6vw,72px)}
+.person .ph{aspect-ratio:4/5;border-radius:14px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:2rem;letter-spacing:-.04em;color:var(--faint);margin-bottom:1rem}
+.person b{display:block;font-weight:500;letter-spacing:-.01em}
+.person span{display:block;font-size:.86rem;color:var(--muted);margin-top:.2rem}
+.advisor{margin-top:2rem;font-size:.92rem;color:var(--ink-2)}
+@media (max-width:820px){.team{grid-template-columns:1fr}}
+@media (max-width:560px){.people{grid-template-columns:1fr 1fr}}
+
+/* Pilot */
+.cta h2{font-size:clamp(3rem,10vw,10rem);letter-spacing:-.06em;line-height:.9}
+.cta h2 span{color:var(--green)}
+.cta-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:40px;margin-top:clamp(48px,6vw,80px)}
+.cta-row > p{color:var(--ink-2);max-width:36ch;font-size:1.12rem;line-height:1.5}
+.terms div{display:grid;grid-template-columns:9rem minmax(0,1fr);gap:16px;padding-block:1rem;border-top:1px solid var(--line)}
+.terms dt{font-size:.86rem;color:var(--muted)}
+.terms dd{color:var(--ink-2)}
+.mail{display:flex;gap:1.4rem;align-items:center;flex-wrap:wrap;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--line)}
+@media (max-width:820px){.cta-row{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.terms div{grid-template-columns:1fr;gap:4px}}
+
+footer{padding-block:40px 56px;font-size:.84rem;color:var(--muted)}
+footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:24px 40px;border-top:1px solid var(--line);padding-top:32px}
+footer nav{display:flex;gap:1.4rem;margin-top:.6rem}
+footer nav a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+footer nav a:hover{color:var(--green)}
+footer p{max-width:64ch;line-height:1.55}
+@media (max-width:820px){footer .wrap{grid-template-columns:1fr}}
+
+/* Reveal-Startzustände (nur mit JS + GSAP) */
+.js .rv{opacity:0;transform:translateY(24px)}
+.js .rv[data-rv=h]{opacity:1;transform:translateY(32px);clip-path:inset(0% 0% 100% 0%)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<nav class="nav" id="nav" aria-label="Hauptnavigation">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Auditwerk, zum Seitenanfang"><b></b>auditwerk</a>
+    <ul>
+      <li><a href="#studie">Studie</a></li>
+      <li><a href="#produkt">Produkt</a></li>
+      <li><a href="#rechner">Rechner</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
+    <a class="btn sm mag" href="#pilot">Pilotplatz anfragen</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="label fade"><i></i>Für Energieauditor:innen · EN 16247 · EEffG</p>
+    <h1><span class="ln l1"><span>Wir bereiten vor.</span></span><span class="ln l2"><span>Sie entscheiden.</span></span></h1>
+
+    <div class="hero-grid">
+      <div class="hero-copy fade">
+        <p>Auditwerk ist der KI‑Copilot für Energieaudits. Er bereitet Verbrauchsdaten auf, analysiert Lastgänge und entwirft den Bericht. Jede Zahl mit Quelle, jede Aussage erst nach Ihrer Freigabe.</p>
+        <div class="hero-actions">
+          <a class="btn mag" href="#pilot">Pilotplatz anfragen <span class="ar" aria-hidden="true">→</span></a>
+          <a class="link" href="#studie">Zur Studie</a>
+        </div>
+      </div>
+
+      <aside class="find" id="find" aria-label="Beispiel einer erkannten Auffälligkeit">
+        <p class="label"><i></i>Auffälligkeit · automatisch erkannt</p>
+        <p class="ft"><b>Grundlast am Sonntag +38 %</b> gegenüber der Werktagsnacht (196 statt 142 kW). Mögliche Ursache: Druckluftleckage oder durchlaufende Lüftung.</p>
+        <div class="acts">
+          <button class="btn" type="button" id="fYes">In Bericht übernehmen</button>
+          <button class="btn ghost" type="button" id="fNo">Verwerfen</button>
+        </div>
+        <p class="msg" aria-live="polite"><span id="fMsg"></span><button class="link" type="button" id="fUndo">Rückgängig</button></p>
+      </aside>
+
+      <div class="curve" id="curve">
+        <svg id="lg" viewBox="0 0 1200 220" preserveAspectRatio="none" role="img" aria-label="Wochenlastgang eines Produktionsstandorts, Beispieldaten: Werktags Spitzen bis 611 kW, nachts Grundlast 142 kW, am Sonntag durchgehend rund 196 kW.">
+          <defs>
+            <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#13A866" stop-opacity=".16"/><stop offset="1" stop-color="#13A866" stop-opacity="0"/></linearGradient>
+            <clipPath id="clip"><rect id="clipRect" x="0" y="-20" width="1200" height="260"/></clipPath>
+          </defs>
+          <rect id="band" x="1028.6" y="0" width="171.4" height="220" fill="#13A866" opacity="0"/>
+          <g clip-path="url(#clip)">
+            <path id="area" fill="url(#gf)"/>
+            <path id="base" fill="none" stroke="#C3C9C5" stroke-width="1" stroke-dasharray="3 5" vector-effect="non-scaling-stroke"/>
+            <path id="line" fill="none" stroke="#0A7A4A" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+          </g>
+        </svg>
+        <div class="ann" id="annPeak"><b>611 kW</b> &nbsp;Lastspitze Di 10:15</div>
+        <div class="ann" id="annBase"><b>142 kW</b> &nbsp;Grundlast Werktagsnacht</div>
+        <div class="ann g" id="annSun"><b>+38 %</b> &nbsp;Grundlast</div>
+        <div class="dot" id="dot" aria-hidden="true"></div>
+        <div class="read" id="read" aria-hidden="true">So 23:45 · 201 kW</div>
+        <div class="days" aria-hidden="true"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+      </div>
+
+      <div class="proof">
+        <span>Entwickelt mit <b>24 Energieauditor:innen</b> aus Österreich</span>
+        <span>Gegründet an der <b>JKU Linz</b></span>
+        <span>Lastgang: Beispieldaten, 672 Viertelstundenwerte</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="sec" id="studie" aria-labelledby="h-studie">
+  <div class="wrap">
+    <div class="intro">
+      <div><p class="label rv"><i></i>Die Studie</p></div>
+      <div>
+        <h2 class="rv" data-rv="h" id="h-studie">Zuerst haben wir 24 Auditor:innen gefragt.</h2>
+        <p class="rv">Wie läuft ein Audit ab, wo geht Zeit verloren, und was darf KI auf keinen Fall tun? Die Antworten haben bestimmt, was Auditwerk kann und was bewusst nicht.</p>
+      </div>
+    </div>
+
+    <div class="study">
+      <div class="rows">
+        <article class="qa" data-n="15" data-t="nennen die Datenerhebung als größten Zeitfresser.">
+          <div class="n">15<span class="of">/24</span></div>
+          <div><p>nennen die Datenerhebung als größten Zeitfresser im Audit.</p><small>Rechnungen, Lastgänge und Zählerlisten anfordern, sortieren, nachfragen. <span class="pc">≈ 63 %</span></small><div class="mini" aria-hidden="true"></div></div>
+        </article>
+        <article class="qa" data-n="19" data-t="rechnen und berichten primär in Excel und Word.">
+          <div class="n">19<span class="of">/24</span></div>
+          <div><p>rechnen und berichten bis heute primär in Excel und Word.</p><small>Eigene Vorlagen, eigene Tools, jedes Büro anders. <span class="pc">≈ 79 %</span></small><div class="mini" aria-hidden="true"></div></div>
+        </article>
+        <article class="qa" data-n="16" data-t="erwarten, dass KI im Audit eine Rolle spielen wird.">
+          <div class="n">16<span class="of">/24</span></div>
+          <div><p>erwarten, dass KI im Auditprozess eine Rolle spielen wird.</p><small>Viele unter einer Bedingung: Die Kontrolle bleibt bei der Auditorin oder dem Auditor. <span class="pc">≈ 67 %</span></small><div class="mini" aria-hidden="true"></div></div>
+        </article>
+      </div>
+      <div class="panel" aria-hidden="true">
+        <div class="dots" id="dots"></div>
+        <p class="pn"><b id="pN">0</b> von 24</p>
+        <p class="pt" id="pT">Jeder Punkt steht für eine vollständige Antwort.</p>
+      </div>
+    </div>
+
+    <div class="method">
+      <b>Methodik</b>
+      <p>Online‑Befragung österreichischer Energieauditor:innen, November 2025 bis Jänner 2026. n = 24 vollständige Antworten, Freitexte manuell kodiert, Mehrfachnennungen möglich. Explorativ, nicht repräsentativ. Prozentwerte gerundet.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pin" id="pin" aria-labelledby="h-pin">
+  <div class="wrap">
+    <div class="states">
+      <div class="st a" aria-hidden="true">
+        <p class="label"><i></i>Heute</p>
+        <h2>So kommen Daten an.</h2>
+        <p>PDF‑Rechnungen, handschriftliche Zählerbücher, Excel‑Listen in jedem denkbaren Aufbau. Und irgendwo steht kWh, wo MWh gemeint ist.</p>
+      </div>
+      <div class="st b">
+        <p class="label"><i></i>Mit Auditwerk</p>
+        <h2 id="h-pin">So gehen sie weiter.</h2>
+        <p>Einheiten vereinheitlicht, Unterzähler nicht doppelt gezählt, jeder Wert mit Quelle. Unsichere Werte sind markiert, und nur die prüfen Sie.</p>
+      </div>
+    </div>
+    <div class="sheet" id="sheet" role="table" aria-label="Beispiel: aufbereitete Datenbasis eines Standorts">
+      <div class="row h" role="row"><span class="c" role="columnheader">Verbraucher</span><span class="c v" role="columnheader">MWh / a</span><span class="c s" role="columnheader">Quelle</span><span role="columnheader"><span class="sr">Status</span></span></div>
+      <div class="row" role="row"><span class="c nm" role="cell" data-raw="Strom ges.">Strom gesamt</span><span class="c v" role="cell" data-raw="4812000 kWh?">4.812</span><span class="c s" role="cell" data-raw="Lastgang_2024.csv">Lastgang · Netzbetreiber</span><span class="k" role="cell" aria-label="geprüft">✓</span></div>
+      <div class="row sub" role="row"><span class="c nm" role="cell" data-raw="DL Kompr. 1-6">Druckluft</span><span class="c v" role="cell" data-raw="1,106 MWh">1.106</span><span class="c s" role="cell" data-raw="Zähler_FM_v3_final.xlsx">Zählerliste · Blatt 2</span><span class="k" role="cell" aria-label="geprüft">✓</span></div>
+      <div class="row sub" role="row"><span class="c nm" role="cell" data-raw="Beleuchtung">Beleuchtung · HLK</span><span class="c v" role="cell" data-raw="ca. 900">911</span><span class="c s" role="cell" data-raw="Begehung, Notiz">Hochrechnung · Begehung</span><span class="k" role="cell" aria-label="geprüft">✓</span></div>
+      <div class="row" role="row"><span class="c nm" role="cell" data-raw="Gas Prozess">Erdgas · Prozesswärme</span><span class="c v" role="cell" data-raw="324.000 m³">3.240</span><span class="c s" role="cell" data-raw="Rechnung Q1–Q4.pdf">Rechnung · Seite 1–4</span><span class="k" role="cell" aria-label="geprüft">✓</span></div>
+      <div class="row" role="row"><span class="c nm" role="cell" data-raw="Halle 2 (Scan)">Erdgas · Halle 2</span><span class="c v" role="cell" data-raw="612??">612</span><span class="c s" role="cell" data-raw="IMG_0347.jpg">Zählerbuch · Scan</span><span class="k q" role="cell" aria-label="zur Prüfung markiert">?</span></div>
+      <div class="total"><span>Summe Hauptzähler<small>Unterzähler nicht doppelt gezählt · 1 Wert zur Prüfung markiert</small></span><b id="sum">8.664 MWh</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="produkt" aria-labelledby="h-produkt">
+  <div class="wrap">
+    <div class="intro">
+      <div><p class="label rv"><i></i>Das Produkt</p></div>
+      <div>
+        <h2 class="rv" data-rv="h" id="h-produkt">Jede Zahl im Bericht hat eine Herkunft.</h2>
+        <p class="rv">Wählen Sie einen markierten Wert im Entwurf. Auditwerk zeigt, woher er stammt, wie er berechnet wurde und wer ihn freigegeben hat.</p>
+      </div>
+    </div>
+
+    <div class="trace" id="trace">
+      <svg class="wire" id="wire" aria-hidden="true"><path id="wirePath" d=""/><circle id="w1" r="3" cx="-10" cy="-10"/><circle id="w2" r="3" cx="-10" cy="-10"/></svg>
+      <article class="doc rv" id="doc" aria-label="Auszug aus einem Berichtsentwurf, Beispieldaten">
+        <div class="meta"><span>Berichtsentwurf · Kap. 4.3</span><span>Beispieldaten</span></div>
+        <h3>4.3 Druckluftversorgung</h3>
+        <p>Die Druckluftstation mit sechs Kompressoren benötigte im Bezugsjahr <button class="ref" type="button" data-src="s1" aria-controls="s1">1.106 MWh</button> Strom, das sind <button class="ref" type="button" data-src="s2" aria-controls="s2">23 %</button> des gesamten Stromverbrauchs am Standort.</p>
+        <p>Die Grundlast am Sonntag liegt mit <button class="ref" type="button" data-src="s3" aria-controls="s3">196 kW</button> um <button class="ref" type="button" data-src="s3" aria-controls="s3">38 %</button> über der Werktagsnacht. Das deutet auf Leckagen im Druckluftnetz hin.</p>
+        <p>Maßnahme M‑04, Leckageortung und ‑beseitigung: geschätzte Einsparung <button class="ref" type="button" data-src="s4" aria-controls="s4">180 MWh/a</button>, Amortisation in <button class="ref" type="button" data-src="s5" aria-controls="s5">0,8 Jahren</button>.</p>
+        <p class="hint"><span class="mono" aria-hidden="true">↳</span>Markierten Wert wählen, um die Quelle zu sehen.</p>
+      </article>
+
+      <div class="srcs" aria-live="polite">
+        <p class="label"><i></i>Quelle</p>
+        <div class="src" id="s1">
+          <div class="hd"><p class="fn">Zählerliste_FM_v3_final.xlsx <span class="chip">bestätigt</span></p><p class="loc">Blatt 2 · Zeile 14 · Spalte F</p></div>
+          <div class="kv"><div><span>13 · Trockner</span><b>0,084</b></div><div class="hl"><span>14 · DL Kompr. 1‑6</span><b>1,106</b></div><div><span>15 · Reserve</span><b>0,000</b></div></div>
+          <p class="note">Zahlenformat mehrdeutig. Als 1.106 MWh gelesen, weil plausibel gegenüber dem Lastgang. Von Ihnen bestätigt.</p>
+        </div>
+        <div class="src" id="s2">
+          <div class="hd"><p class="fn">Berechnung <span class="chip n">abgeleitet</span></p><p class="loc">aus zwei Quellen</p></div>
+          <div class="kv"><div><span>Druckluft · Zählerliste Blatt 2</span><b>1.106 MWh</b></div><div><span>Strom gesamt · Lastgang_2024.csv</span><b>4.812 MWh</b></div><div class="hl"><span>Anteil</span><b>22,98 %</b></div></div>
+          <p class="note">Im Bericht auf ganze Prozent gerundet.</p>
+        </div>
+        <div class="src" id="s3">
+          <div class="hd"><p class="fn">Lastgang_2024.csv <span class="chip n" id="s3chip">zur Freigabe</span></p><p class="loc">Mittelwerte aus 15‑Minuten‑Werten</p></div>
+          <div class="kv"><div><span>So, 00:00–23:45</span><b>196 kW</b></div><div><span>Mo–Fr, 00:00–05:00</span><b>142 kW</b></div><div class="hl"><span>Differenz</span><b>+38 %</b></div></div>
+          <p class="note" id="s3note">Dieselbe Auffälligkeit wie oben im Lastgang. Sie entscheiden, ob sie in den Bericht kommt.</p>
+        </div>
+        <div class="src" id="s4">
+          <div class="hd"><p class="fn">Begehungsprotokoll.pdf <span class="chip n">Annahme · von Ihnen gesetzt</span></p><p class="loc">Seite 3 · Ultraschall‑Leckageortung</p></div>
+          <div class="kv"><div><span>Markierte Leckagen</span><b>27</b></div><div><span>Geschätzter Verlustanteil</span><b>16 %</b></div><div class="hl"><span>1.106 MWh × 16 %</span><b>≈ 180 MWh/a</b></div></div>
+        </div>
+        <div class="src" id="s5">
+          <div class="hd"><p class="fn">Maßnahmenbewertung M‑04 <span class="chip n">berechnet</span></p><p class="loc">mit Ihren Parametern</p></div>
+          <div class="kv"><div><span>Investition</span><b>21.600 €</b></div><div><span>Strompreis (Ihr Wert)</span><b>150 €/MWh</b></div><div><span>Einsparung</span><b>27.000 €/a</b></div><div class="hl"><span>Statische Amortisation</span><b>0,8 Jahre</b></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caps">
+      <p class="label rv"><i></i>Entlang EN 16247‑1. Wo Begehung und Gespräch zählen, halten wir uns raus.</p>
+      <div class="cap rv"><h3><span>Datenerfassung</span>Datenaufbereitung</h3><p>Ein Upload‑Portal für Ihre Kund:innen. Formate, Einheiten und Plausibilität werden automatisch geprüft, Rückfragen vorbereitet.</p></div>
+      <div class="cap rv"><h3><span>Analyse</span>Lastganganalyse</h3><p>15‑Minuten‑ und Stundenwerte, mehrere Standorte, mehrere Jahre in einem Lauf. Ersatzwerte nachvollziehbar dokumentiert.</p></div>
+      <div class="cap rv"><h3><span>Analyse</span>Baseline &amp; EnPIs</h3><p>Witterungsbereinigung mit Heizgradtagen von GeoSphere Austria. Kennzahlen und wesentliche Energieeinsätze nach Norm.</p></div>
+      <div class="cap rv"><h3><span>Analyse</span>Maßnahmenbewertung</h3><p>Kapitalwert, interner Zinsfuß und Amortisation mit Ihren Parametern, inklusive Hinweisen auf Förderungen.</p></div>
+      <div class="cap rv"><h3><span>Bericht</span>Berichtsentwurf</h3><p>Allgemeine Kapitel, Ist‑Analyse und Maßnahmenliste als Word‑Datei, die Sie frei überarbeiten. Mit Quellenverweis an jeder Zahl.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec flush" aria-label="Grundsätze">
+  <div class="wrap">
+    <blockquote>
+      <p class="quote" id="quote" lang="en">„AI should not replace an auditor, but rather support them in improving the quality of audits.“</p>
+    </blockquote>
+    <p class="quote-src">Freitextantwort aus der Befragung. Für uns der wichtigste Satz der ganzen Studie.</p>
+    <div class="principles">
+      <div class="rv">
+        <span class="no">01</span>
+        <h3>Sie behalten die Kontrolle</h3>
+        <p>Jeder Befund, jede Maßnahme und jeder Satz braucht Ihre Freigabe. Ohne Freigabe verlässt nichts das System.</p>
+      </div>
+      <div class="rv">
+        <span class="no">02</span>
+        <h3>Ihre Daten bleiben geschützt</h3>
+        <p>Verarbeitung in der EU bei <span class="todo">[Hosting‑Anbieter, Standort]</span>. Sprachmodell: <span class="todo">[Modell, Anbieter, Region]</span>. Kein Training auf Kundendaten. Auftragsverarbeitungsvertrag vor dem ersten Datensatz.</p>
+      </div>
+      <div class="rv">
+        <span class="no">03</span>
+        <h3>Belegt statt behauptet</h3>
+        <p>Keine Textbausteine. Jede Aussage stützt sich auf die Daten des jeweiligen Standorts und verweist auf ihre Quelle, so wie im Beispiel oben.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec flush" id="rechner" aria-labelledby="h-rechner">
+  <div class="wrap calc">
+    <div>
+      <p class="label rv" style="margin-bottom:1.6rem"><i></i>Modellrechnung</p>
+      <h2 class="rv" data-rv="h" id="h-rechner">Was bringt das Ihrem Büro?</h2>
+      <p class="lead rv">Annahme: 55 % der Audit‑Stunden entfallen auf Daten, Analyse und Bericht. Davon wollen wir 40 % einsparen. Das ist unser Entwicklungsziel, das wir im Pilotprogramm messen.</p>
+      <div class="field"><label for="cA">Audits pro Jahr <output id="oA" for="cA">8</output></label><input type="range" id="cA" min="1" max="40" value="8"></div>
+      <div class="field"><label for="cH">Stunden pro Audit <output id="oH" for="cH">90 h</output></label><input type="range" id="cH" min="20" max="250" step="5" value="90"></div>
+      <div class="field"><label for="cR">Interner Stundensatz <output id="oR" for="cR">110 €</output></label><input type="range" id="cR" min="60" max="200" step="5" value="110"></div>
+    </div>
+    <div class="res">
+      <div class="big" aria-hidden="true"><span id="rH">158</span><small>h</small></div>
+      <p class="cap1" aria-hidden="true">freie Zeit pro Jahr</p>
+      <div class="sub" aria-hidden="true">
+        <div><b id="rE">17.424 €</b><span>Kapazitätswert pro Jahr</span></div>
+        <div><b id="rX">+2,3</b><span>zusätzliche Audits möglich</span></div>
+      </div>
+      <p class="fx" id="fx" aria-hidden="true">8 × 90 h × 55 % × 40 % = 158 h</p>
+      <p class="note">Ein Richtwert, keine Zusage.</p>
+      <p class="sr" id="calcLive" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section class="sec flush market" aria-labelledby="h-markt">
+  <div class="wrap">
+    <p class="label rv" style="margin-bottom:2rem"><i></i>Auftragslage</p>
+    <h2 class="rv" data-rv="h" id="h-markt">Die Auditpflicht wächst. <em>Ihre Woche nicht.</em></h2>
+    <div class="row">
+      <p class="rv">Mit der EU‑Energieeffizienzrichtlinie EED III hängt die Auditpflicht künftig am Energieverbrauch statt an der Unternehmensgröße. Damit fallen erstmals viele mittelständische Betriebe darunter. Die Frist zur Umsetzung in nationales Recht, in Österreich über das EEffG, lief im Oktober 2025 ab.</p>
+      <div class="figs rv">
+        <div><b>10 TJ</b><span><em>≈ 2,8 GWh</em> Jahresverbrauch, ab dem ein Energieaudit Pflicht wird</span></div>
+        <div><b>85 TJ</b><span><em>≈ 23,6 GWh</em>, ab hier ist ein Energiemanagement­system gefordert</span></div>
+        <div><b>4 Jahre</b><span>Rhythmus, in dem sich das Audit wiederholt</span></div>
+      </div>
+      <p class="src-line">Quelle: Richtlinie (EU) 2023/1791, Art. 11.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec flush" id="team" aria-labelledby="h-team">
+  <div class="wrap">
+    <div class="team">
+      <div><p class="label rv" style="margin-bottom:2rem"><i></i>Team</p><h2 class="rv" data-rv="h" id="h-team">Aus dem KI‑Studium in die Praxis.</h2></div>
+      <div class="txt">
+        <p class="rv">Auditwerk wurde von Studierenden des Bachelorstudiums <strong>Artificial Intelligence an der Johannes Kepler Universität Linz</strong> gegründet.</p>
+        <p class="rv">Wir bringen Machine Learning, Zeitreihenanalyse und saubere Datenpipelines mit. Energietechnisches Urteil bringen wir nicht mit. Genau deshalb bauen wir gemeinsam mit Auditor:innen.</p>
+        <p class="rv">Wir arbeiten wissenschaftlich: Hypothese, Befragung, Prototyp, Messung. Jede Funktion muss im Pilotaudit zeigen, dass sie Zeit spart, ohne Qualität zu kosten.</p>
+        <div class="people rv">
+          <!-- TODO: echte Fotos (4:5), Namen und Schwerpunkte einsetzen, Name ggf. mit LinkedIn verlinken -->
+          <div class="person"><div class="ph" aria-hidden="true">AB</div><b class="todo">[Vorname Nachname]</b><span class="todo">[Schwerpunkt, z. B. Zeitreihen]</span></div>
+          <div class="person"><div class="ph" aria-hidden="true">CD</div><b class="todo">[Vorname Nachname]</b><span class="todo">[Schwerpunkt, z. B. Datenpipelines]</span></div>
+          <div class="person"><div class="ph" aria-hidden="true">EF</div><b class="todo">[Vorname Nachname]</b><span class="todo">[Schwerpunkt, z. B. Produkt]</span></div>
+        </div>
+        <p class="advisor rv">Fachlich begleitet von <span class="todo">[Name, Energieauditor:in oder JKU‑Institut]</span>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec flush cta" id="pilot" aria-labelledby="h-pilot">
+  <div class="wrap">
+    <h2 class="rv" data-rv="h" id="h-pilot">Zehn Pilotplätze.<br><span>2026.</span></h2>
+    <div class="cta-row">
+      <p class="rv">Drei Monate, an einem echten Audit, kostenlos. Mit direktem Draht zum Entwicklungsteam und Einfluss darauf, was wir bauen.</p>
+      <div class="rv">
+        <dl class="terms">
+          <div><dt>Sie bringen</dt><dd>Ein Audit, das im Pilotzeitraum ohnehin ansteht, und <span class="todo">[ca. X Stunden]</span> Rückmeldung pro Monat.</dd></div>
+          <div><dt>Sie bekommen</dt><dd>Auditwerk für dieses Audit, kostenlos, und direkten Einfluss auf die Weiterentwicklung.</dd></div>
+          <div><dt>Ihre Daten</dt><dd>Auftragsverarbeitungsvertrag vor dem ersten Datensatz. Nach Pilotende löschen wir auf Wunsch alles.</dd></div>
+        </dl>
+        <div class="mail">
+          <a class="btn mag" href="mailto:pilot@auditwerk.at?subject=Pilotplatz%202026&amp;body=B%C3%BCro%3A%20%0AAudits%20pro%20Jahr%3A%20%0AN%C3%A4chstes%20Audit%20ab%3A%20%0ATelefon%20f%C3%BCr%20R%C3%BCckruf%3A%20">Pilotplatz per E‑Mail anfragen <span class="ar" aria-hidden="true">→</span></a>
+          <button class="link" type="button" id="copy" data-mail="pilot@auditwerk.at">pilot@auditwerk.at kopieren</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <span>© 2026 Auditwerk · Linz</span>
+      <!-- TODO: Impressum (§ 5 ECG, § 25 MedienG) und Datenschutzerklärung (DSGVO) anlegen -->
+      <nav aria-label="Rechtliches"><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></nav>
+    </div>
+    <p>Studie: Online‑Befragung österreichischer Energieauditor:innen, November 2025 bis Jänner 2026, n = 24, explorativ. Lastgang, Datentabelle und Berichtsauszug zeigen Beispieldaten.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  window.__aw = 1;
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const anim = !!(window.gsap && window.ScrollTrigger) && !reduce;
+  if (!anim) root.classList.remove('js');
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString('de-DE');
+
+  /* ---------- Nav + Fortschritt ---------- */
+  const nav = $('nav'), prog = $('progress');
+  let scrollQueued = false;
+  function onScroll(){
+    if (scrollQueued) return; scrollQueued = true;
+    requestAnimationFrame(() => {
+      const h = root.scrollHeight - innerHeight;
+      prog.style.transform = 'scaleX(' + (h > 0 ? scrollY / h : 0) + ')';
+      nav.classList.toggle('solid', scrollY > 40);
+      scrollQueued = false;
+    });
+  }
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  /* ---------- Lastgang: Daten (deterministisch) ---------- */
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const N = 672, d = [];
+  for (let i = 0; i < N; i++){
+    const day = Math.floor(i / 96), h = (i % 96) / 4;
+    let v = 142 + rnd() * 12; if (day === 6) v *= 1.38;
+    if (day < 5 && h >= 6 && h < 22){ v += 290 + 55 * Math.sin((h - 6) / 16 * Math.PI) + rnd() * 40; if (h < 6.75) v -= (6.75 - h) * 160; }
+    if (day === 5 && h >= 6 && h < 13) v += 130 + rnd() * 25;
+    if (day === 1 && h >= 10 && h < 10.5) v = 611;
+    d.push(v);
+  }
+  const s = d.map((v, i) => i > 0 && i < N - 1 && !(i >= 136 && i <= 139) ? (d[i-1] + 2*v + d[i+1]) / 4 : v);
+  const VW = 1200, VH = 220, YMAX = 650, PARK = N - 1;
+  const px = i => i / (N - 1) * VW, py = v => VH - (v / YMAX) * VH;
+  let dl = ''; s.forEach((v, i) => dl += (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(v).toFixed(1));
+  $('line').setAttribute('d', dl);
+  $('area').setAttribute('d', dl + 'L' + VW + ' ' + VH + 'L0 ' + VH + 'Z');
+  $('base').setAttribute('d', 'M0 ' + py(142) + 'L' + VW + ' ' + py(142));
+
+  const curve = $('curve'), svg = $('lg'), dot = $('dot'), rd = $('read'), clip = $('clipRect');
+  const annPeak = $('annPeak'), annBase = $('annBase'), annSun = $('annSun');
+  const days = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let R = {ox:0, oy:0, w:1, h:1, cw:1}, rdW = 0;
+  const X = i => R.ox + i / (N - 1) * R.w, Y = v => R.oy + (1 - v / YMAX) * R.h;
+  function placeAt(el, x, y){ el.style.left = x + 'px'; el.style.top = y + 'px'; }
+  function measure(){
+    const c = curve.getBoundingClientRect(), r = svg.getBoundingClientRect();
+    R = {ox:r.left - c.left, oy:r.top - c.top, w:r.width, h:r.height, cw:c.width};
+    rdW = rd.offsetWidth;
+    placeAt(annPeak, Math.min(X(137) + 14, R.cw - annPeak.offsetWidth), Y(611) - 8);
+    placeAt(annBase, X(330), Y(142) - 26);
+    placeAt(annSun, Math.min(X(6 * 96) + 10, R.cw - annSun.offsetWidth), R.oy + 8);
+    setDot(cur);
+  }
+  let cur = PARK;
+  function setDot(i){
+    cur = i = Math.max(0, Math.min(N - 1, Math.round(i)));
+    const x = X(i), y = Y(s[i]);
+    dot.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    const m = (i % 96) * 15;
+    rd.textContent = days[Math.floor(i / 96)] + ' ' + String(m / 60 | 0).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0') + ' · ' + Math.round(s[i]) + ' kW';
+    const lx = Math.max(0, Math.min(R.cw - rdW, x - rdW / 2));
+    rd.style.transform = 'translate(' + lx + 'px,' + (y - 38) + 'px)';
+  }
+  measure();
+
+  let ready = !anim;
+  svg.addEventListener('pointermove', e => {
+    if (!ready) return;
+    const r = svg.getBoundingClientRect();
+    setDot((e.clientX - r.left) / r.width * (N - 1));
+  });
+  svg.addEventListener('pointerleave', () => { if (ready) setDot(PARK); });
+
+  /* ---------- Entscheidung im Hero ---------- */
+  const find = $('find'), fMsg = $('fMsg'), s3chip = $('s3chip'), s3note = $('s3note');
+  function decide(ok){
+    if (ok === null){
+      delete find.dataset.state; fMsg.textContent = '';
+      s3chip.textContent = 'zur Freigabe'; s3chip.className = 'chip n';
+      s3note.textContent = 'Dieselbe Auffälligkeit wie oben im Lastgang. Sie entscheiden, ob sie in den Bericht kommt.';
+      $('fYes').focus(); return;
+    }
+    find.dataset.state = ok ? 'yes' : 'no';
+    fMsg.textContent = ok ? 'Übernommen. Steht im Berichtsentwurf, Quelle: Lastgang_2024.csv.' : 'Verworfen. Kommt nicht in den Bericht.';
+    s3chip.textContent = ok ? 'von Ihnen übernommen' : 'von Ihnen verworfen';
+    s3chip.className = ok ? 'chip' : 'chip n';
+    s3note.textContent = ok ? 'Diese Auffälligkeit haben Sie oben im Lastgang übernommen.' : 'Diese Auffälligkeit haben Sie oben verworfen. Der Absatz würde im Bericht entfallen.';
+    $('fUndo').focus();
+  }
+  $('fYes').addEventListener('click', () => decide(true));
+  $('fNo').addEventListener('click', () => decide(false));
+  $('fUndo').addEventListener('click', () => decide(null));
+
+  /* ---------- Studie: 24 Punkte ---------- */
+  const dotsEl = $('dots');
+  for (let i = 0; i < 24; i++){ const el = document.createElement('i'); dotsEl.appendChild(el); }
+  const big = [...dotsEl.children];
+  const qs = [...document.querySelectorAll('.qa')];
+  qs.forEach(q => { const n = +q.dataset.n, mini = q.querySelector('.mini');
+    for (let i = 0; i < 24; i++){ const el = document.createElement('i'); if (i < n) el.className = 'on'; mini.appendChild(el); } });
+  let shown = 0;
+  function setQ(q){
+    const n = +q.dataset.n, up = n > shown;
+    big.forEach((el, i) => {
+      el.style.setProperty('--d', (up ? Math.max(0, i - shown) : Math.max(0, shown - 1 - i)) * 0.028 + 's');
+      el.classList.toggle('on', i < n);
+    });
+    shown = n;
+    $('pN').textContent = n; $('pT').textContent = q.dataset.t;
+  }
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setQ(e.target); }), {rootMargin:'-42% 0px -48% 0px'});
+    qs.forEach(q => io.observe(q));
+  } else setQ(qs[0]);
+
+  /* ---------- Quellen-Nachweis ---------- */
+  const trace = $('trace'), doc = $('doc'), refs = [...document.querySelectorAll('.ref')], srcs = [...document.querySelectorAll('.src')];
+  const wire = $('wirePath'), w1 = $('w1'), w2 = $('w2');
+  const wide = matchMedia('(min-width:900px)');
+  let active = refs[0];
+  function drawWire(animate){
+    if (!wide.matches){ wire.setAttribute('d', ''); return; }
+    const t = trace.getBoundingClientRect(), a = active.getBoundingClientRect(), dc = doc.getBoundingClientRect();
+    const card = document.getElementById(active.dataset.src).querySelector('.hd').getBoundingClientRect();
+    const x1 = dc.right - t.left, y1 = a.top + a.height / 2 - t.top;
+    const x2 = card.left - t.left, y2 = card.top + 24 - t.top;
+    const mx = x1 + (x2 - x1) * .5;
+    wire.setAttribute('d', 'M' + x1 + ' ' + y1 + 'C' + mx + ' ' + y1 + ' ' + mx + ' ' + y2 + ' ' + x2 + ' ' + y2);
+    w1.setAttribute('cx', x1); w1.setAttribute('cy', y1); w2.setAttribute('cx', x2); w2.setAttribute('cy', y2);
+    if (animate && anim){
+      const L = wire.getTotalLength();
+      gsap.fromTo(wire, {strokeDasharray:L, strokeDashoffset:L}, {strokeDashoffset:0, duration:.7, ease:'power3.inOut', overwrite:true});
+      gsap.fromTo(w2, {scale:0, transformOrigin:'50% 50%'}, {scale:1, duration:.3, delay:.55, ease:'power3.out', overwrite:true});
+    } else { wire.style.strokeDasharray = 'none'; wire.style.strokeDashoffset = '0'; }
+  }
+  function activate(btn, animate){
+    if (btn === active && btn.getAttribute('aria-pressed') === 'true') return;
+    active = btn;
+    refs.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    srcs.forEach(el => el.classList.toggle('on', el.id === btn.dataset.src));
+    drawWire(animate);
+  }
+  refs.forEach(b => {
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => activate(b, true));
+    b.addEventListener('focus', () => activate(b, true));
+    if (finePointer) b.addEventListener('pointerenter', () => activate(b, true));
+  });
+  if (!anim) activate(refs[0], false);
+
+  /* ---------- Rechner ---------- */
+  function calc(){
+    const a = +$('cA').value, h = +$('cH').value, r = +$('cR').value, f = .55 * .40;
+    $('oA').textContent = a; $('oH').textContent = h + ' h'; $('oR').textContent = r + ' €';
+    ['cA','cH','cR'].forEach(id => { const el = $(id); el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); });
+    const free = a * h * f;
+    $('rH').textContent = fmt(free); $('rE').textContent = fmt(free * r) + ' €';
+    const extra = (free / (h * (1 - f))).toLocaleString('de-DE', {minimumFractionDigits:1, maximumFractionDigits:1});
+    $('rX').textContent = '+' + extra;
+    $('fx').textContent = a + ' × ' + h + ' h × 55 % × 40 % = ' + fmt(free) + ' h';
+    return {free, r, extra};
+  }
+  ['cA','cH','cR'].forEach(id => {
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', () => { const o = calc(); $('calcLive').textContent = fmt(o.free) + ' Stunden frei pro Jahr, Kapazitätswert ' + fmt(o.free * o.r) + ' Euro, ' + o.extra + ' zusätzliche Audits.'; });
+  });
+  calc();
+
+  /* ---------- Kopieren ---------- */
+  const copyBtn = $('copy'), copyLbl = copyBtn.textContent;
+  copyBtn.addEventListener('click', () => {
+    const done = t => { copyBtn.textContent = t; setTimeout(() => copyBtn.textContent = copyLbl, 2000); };
+    if (navigator.clipboard) navigator.clipboard.writeText(copyBtn.dataset.mail).then(() => done('Kopiert'), () => done(copyBtn.dataset.mail));
+    else done(copyBtn.dataset.mail);
+  });
+
+  /* ---------- Zitat in Wörter ---------- */
+  const q = $('quote');
+  q.innerHTML = q.textContent.split(' ').map(w => '<span class="w">' + w + '</span>').join(' ');
+  const words = [...q.querySelectorAll('.w')];
+
+  /* ---------- Resize ---------- */
+  let rz = 0;
+  addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { measure(); drawWire(false); }); });
+  document.fonts && document.fonts.ready.then(() => { measure(); drawWire(false); if (anim) ScrollTrigger.refresh(); });
+
+  if (!anim){ setDot(PARK); return; }
+
+  /* ============ Ab hier nur mit GSAP und ohne reduced motion ============ */
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* Hero: eine Szene. Der Punkt zeichnet die Woche, parkt am Sonntag, dann entscheiden Sie. */
+  const pen = {v:0};
+  clip.setAttribute('width', '0');
+  const hero = gsap.timeline({delay:.75, onComplete:() => { ready = true; }});
+  hero.set([dot, rd], {opacity:1})
+    .to(pen, {v:1, duration:2.6, ease:'power2.inOut', onUpdate:() => {
+      clip.setAttribute('width', (VW * pen.v).toFixed(1));
+      setDot(pen.v * (N - 1));
+      if (pen.v > 141 / N) annPeak.classList.add('on');
+      if (pen.v > 340 / N) annBase.classList.add('on');
+    }})
+    .to('#band', {attr:{opacity:.07}, duration:.8, ease:'power2.out'}, '+=.15')
+    .add(() => annSun.classList.add('on'), '<')
+    .fromTo(find, {autoAlpha:0, y:14}, {autoAlpha:1, y:0, duration:.9, ease:'expo.out'}, '+=.25')
+    .to('.hero h1 .l2 span', {color:'#0B0F0D', duration:1.1, ease:'power2.out'}, '<.1');
+
+  /* Chaos -> Ordnung. Positionen von Hand gesetzt, nicht zufällig. */
+  const pin = $('pin'), sheet = $('sheet');
+  const rows = [...sheet.querySelectorAll('.row:not(.h)')];
+  const rawCells = [...sheet.querySelectorAll('.c[data-raw]')];
+  rawCells.forEach(c => c.dataset.clean = c.textContent);
+  const setRaw = (c, raw) => { const want = raw ? c.dataset.raw : c.dataset.clean; if (c.textContent !== want){ c.textContent = want; c.classList.toggle('raw', raw); } };
+  //            name            wert            quelle
+  const CH = [ [ 70,-70,-5],   [-150,120, 4],  [-30,-120,-3],
+               [190, 95, 5],   [ 40,-80,-7],   [-230,150, 6],
+               [ 30,150,-4],   [-210,-45, 8],  [ 10, 95,-5],
+               [210,-130,6],   [-70, 60,-3],   [-260,-70, 4],
+               [110, 45,-8],   [ 70,-150,6],   [-160, 35,-6] ];
+  const sumEl = $('sum');
+
+  const mm = gsap.matchMedia();
+  mm.add({desk:'(min-width:900px)', mob:'(max-width:899.98px)'}, ctx => {
+    const desk = ctx.conditions.desk, k = desk ? 1 : .3;
+    const tl = gsap.timeline({
+      scrollTrigger: desk
+        ? {trigger:pin, start:'top top', end:'+=160%', pin:true, scrub:.8, refreshPriority:1, anticipatePin:1}
+        : {trigger:sheet, start:'top 80%', end:'bottom 45%', scrub:.6},
+      onUpdate(){ const t = this.time(); rawCells.forEach(c => setRaw(c, t < c._swap)); }
+    });
+    gsap.set(rows, {borderBottomColor:'rgba(236,238,236,0)'});
+    rows.forEach((row, r) => {
+      [...row.querySelectorAll('.c')].forEach((c, j) => {
+        const o = CH[r * 3 + j], at = r * .32 + j * .07;
+        tl.fromTo(c, {x:o[0] * k, y:o[1] * k, rotation:o[2] * (desk ? 1 : .5), opacity:.85}, {x:0, y:0, rotation:0, opacity:1, duration:1.1, ease:'power3.inOut'}, at);
+        c._swap = at + .75;
+      });
+    });
+    const T1 = (rows.length - 1) * .32 + .14 + 1.1;
+    tl.fromTo('.st.a', {autoAlpha:1, y:0}, {autoAlpha:0, y:-16, duration:.5, ease:'power2.in'}, 1.1)
+      .fromTo('.st.b', {autoAlpha:0, y:16}, {autoAlpha:1, y:0, duration:.6, ease:'power2.out'}, 1.45)
+      .to(rows, {borderBottomColor:'rgba(236,238,236,1)', duration:.4, stagger:.08}, T1)
+      .fromTo(sheet.querySelectorAll('.k'), {scale:1.6, autoAlpha:0}, {scale:1, autoAlpha:1, duration:.35, stagger:.1, ease:'power4.out'}, T1 + .15)
+      .fromTo('.sheet .total', {autoAlpha:0}, {autoAlpha:1, duration:.3}, T1 + .7);
+    const sum = {v:0};
+    tl.fromTo(sum, {v:0}, {v:8664, duration:.8, ease:'power2.out', onUpdate:() => sumEl.textContent = fmt(sum.v) + ' MWh'}, T1 + .7)
+      .to({}, {duration:.4});
+    rawCells.forEach(c => setRaw(c, true));
+    return () => { rawCells.forEach(c => setRaw(c, false)); sumEl.textContent = '8.664 MWh'; };
+  });
+
+  /* Reveals: Überschriften als Maske, Text als kurzes Auftauchen. Nach dem Pin erzeugt. */
+  ScrollTrigger.batch('.rv', {start:'top 88%', once:true, onEnter:batch => {
+    batch.forEach((el, i) => {
+      const h = el.dataset.rv === 'h';
+      // Endzustand inline setzen, damit die .js-Startwerte aus dem CSS nicht zurückkommen
+      const done = () => { el.style.transform = 'none'; el.style.clipPath = 'none'; el.style.opacity = '1'; };
+      if (h) gsap.fromTo(el, {clipPath:'inset(0% 0% 100% 0%)', y:32}, {clipPath:'inset(0% 0% 0% 0%)', y:0, duration:1.2, ease:'expo.out', delay:i * .08, onComplete:done});
+      else gsap.fromTo(el, {opacity:0, y:24}, {opacity:1, y:0, duration:.9, ease:'power3.out', delay:i * .08, onComplete:done});
+    });
+  }});
+
+  /* Quellen-Nachweis startet, sobald der Entwurf sichtbar ist */
+  ScrollTrigger.create({trigger:trace, start:'top 60%', once:true, onEnter:() => activate(refs[0], true)});
+
+  /* Zitat Wort für Wort */
+  gsap.to(words, {opacity:1, stagger:.1, ease:'none', scrollTrigger:{trigger:q, start:'top 80%', end:'bottom 45%', scrub:true}});
+
+  /* Magnetisch, nur mit Maus, ohne Nachwippen */
+  if (finePointer) document.querySelectorAll('.mag').forEach(b => {
+    const qx = gsap.quickTo(b, 'x', {duration:.5, ease:'power3.out'}), qy = gsap.quickTo(b, 'y', {duration:.5, ease:'power3.out'});
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); qx((e.clientX - r.left - r.width / 2) * .15); qy((e.clientY - r.top - r.height / 2) * .2); });
+    b.addEventListener('pointerleave', () => { qx(0); qy(0); });
+  });
+})();
+</script>
+</body>
+</html>
